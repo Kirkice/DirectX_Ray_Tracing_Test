@@ -13,6 +13,7 @@
 
 #define SizeOfInUint32(obj) ((sizeof(obj) - 1) / sizeof(UINT32) + 1)
 
+// 加速结构
 struct AccelerationStructureBuffers
 {
     ComPtr<ID3D12Resource> scratch;

@@ -193,9 +193,10 @@ void DeviceResources::CreateDeviceResources()
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
+    //创建命令队列
     ThrowIfFailed(m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 
-    // Create descriptor heaps for render target views and depth stencil views.
+    // 创建描述符堆
     D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc = {};
     rtvDescriptorHeapDesc.NumDescriptors = m_backBufferCount;
     rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -223,7 +224,7 @@ void DeviceResources::CreateDeviceResources()
     ThrowIfFailed(m_d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(&m_commandList)));
     ThrowIfFailed(m_commandList->Close());
 
-    // Create a fence for tracking GPU execution progress.
+    // 创建栅栏同步
     ThrowIfFailed(m_d3dDevice->CreateFence(m_fenceValues[m_backBufferIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence)));
     m_fenceValues[m_backBufferIndex]++;
 
@@ -477,7 +478,9 @@ void DeviceResources::HandleDeviceLost()
         }
     }
 #endif
+    //初始化DXGI的Adapter
     InitializeDXGIAdapter();
+    //初始化device 描述符堆、命令队列、GPU栅栏同步
     CreateDeviceResources();
     CreateWindowSizeDependentResources();
 

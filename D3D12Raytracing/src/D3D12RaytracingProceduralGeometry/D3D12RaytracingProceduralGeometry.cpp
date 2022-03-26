@@ -60,7 +60,7 @@ D3D12RaytracingProceduralGeometry::D3D12RaytracingProceduralGeometry(UINT width,
     UpdateForSizeChange(width, height);
 }
 
-
+//  初始化
 void D3D12RaytracingProceduralGeometry::OnInit()
 {
     m_deviceResources = std::make_unique<DeviceResources>(
@@ -73,18 +73,24 @@ void D3D12RaytracingProceduralGeometry::OnInit()
         DeviceResources::c_RequireTearingSupport,
         m_adapterIDoverride
         );
-    m_deviceResources->RegisterDeviceNotify(this);
-    m_deviceResources->SetWindow(Win32Application::GetHwnd(), m_width, m_height);
-    m_deviceResources->InitializeDXGIAdapter();
 
+    //  注册设备通知
+    m_deviceResources->RegisterDeviceNotify(this);
+    //  设置Window
+    m_deviceResources->SetWindow(Win32Application::GetHwnd(), m_width, m_height);
+    //  初始化DXGI的Adapter
+    m_deviceResources->InitializeDXGIAdapter();
+    //  康康你的设备能不能支持
     ThrowIfFalse(IsDirectXRaytracingSupported(m_deviceResources->GetAdapter()),
         L"ERROR: DirectX Raytracing is not supported by your OS, GPU and/or driver.\n\n");
-
+    //  创建设备资源：命令队列、描述符堆、栅栏同步
     m_deviceResources->CreateDeviceResources();
+    //  创建窗口RTV 交换链
     m_deviceResources->CreateWindowSizeDependentResources();
-
+    //  初始化场景
     InitializeScene();
 
+    //  创建资源
     CreateDeviceDependentResources();
     CreateWindowSizeDependentResources();
 }
@@ -161,12 +167,12 @@ void D3D12RaytracingProceduralGeometry::UpdateAABBPrimitiveAttributes(float anim
     }
 }
 
-// Initialize scene rendering parameters.
+// 初始化场景参数
 void D3D12RaytracingProceduralGeometry::InitializeScene()
 {
     auto frameIndex = m_deviceResources->GetCurrentFrameIndex();
 
-    // Setup materials.
+    //  设置材质参数
     {
         auto SetAttributes = [&](
             UINT primitiveIndex, 
@@ -186,16 +192,16 @@ void D3D12RaytracingProceduralGeometry::InitializeScene()
             attributes.stepScale = stepScale;
         };
 
-
+        //  地面材质
         m_planeMaterialCB = { XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f), 0.25f, 1, 0.4f, 50, 1};
 
-        // Albedos
+        // 固有色
         XMFLOAT4 green = XMFLOAT4(0.1f, 1.0f, 0.5f, 1.0f);
         XMFLOAT4 red = XMFLOAT4(1.0f, 0.5f, 0.5f, 1.0f);
         XMFLOAT4 yellow = XMFLOAT4(1.0f, 1.0f, 0.5f, 1.0f);
         
         UINT offset = 0;
-        // Analytic primitives.
+        // Analytic primitives. 
         {
             using namespace AnalyticPrimitive;
             SetAttributes(offset + AABB, red);
@@ -223,7 +229,7 @@ void D3D12RaytracingProceduralGeometry::InitializeScene()
         }
     }
 
-    // Setup camera.
+    // 设置相机
     {
         // Initialize the view and projection inverse matrices.
         m_eye = { 0.0f, 5.3f, -17.0f, 1.0f }; 
@@ -241,7 +247,7 @@ void D3D12RaytracingProceduralGeometry::InitializeScene()
         UpdateCameraMatrices();
     }
 
-    // Setup lights.
+    // 设置灯光
     {
         // Initialize the lighting parameters.
         XMFLOAT4 lightPosition;
