@@ -68,8 +68,6 @@ void D3D12RaytracingProceduralGeometry::OnInit()
         DXGI_FORMAT_UNKNOWN,
         FrameCount,
         D3D_FEATURE_LEVEL_11_0,
-        // Sample shows handling of use cases with tearing support, which is OS dependent and has been supported since TH2.
-        // Since the sample requires build 1809 (RS5) or higher, we don't need to handle non-tearing cases.
         DeviceResources::c_RequireTearingSupport,
         m_adapterIDoverride
         );
@@ -80,18 +78,19 @@ void D3D12RaytracingProceduralGeometry::OnInit()
     m_deviceResources->SetWindow(Win32Application::GetHwnd(), m_width, m_height);
     //  初始化DXGI的Adapter
     m_deviceResources->InitializeDXGIAdapter();
-    //  康康你的设备能不能支持
+    //  康康你的设备能不能支持DXR
     ThrowIfFalse(IsDirectXRaytracingSupported(m_deviceResources->GetAdapter()),
         L"ERROR: DirectX Raytracing is not supported by your OS, GPU and/or driver.\n\n");
-    //  创建设备资源：命令队列、描述符堆、栅栏同步
+    //  创建设备资源：命令队列、描述符堆、栅栏同步等等
     m_deviceResources->CreateDeviceResources();
-    //  创建窗口RTV 交换链
+    //  创建设置交换链
     m_deviceResources->CreateWindowSizeDependentResources();
-    //  初始化场景
+    //  初始化场景：灯光、材质、相机等等
     InitializeScene();
 
-    //  创建资源
+    //  创建加速结构、根签名、PSO、描述符堆、模型、常量缓冲区、AABB、着色器表、OutPut Resource等等
     CreateDeviceDependentResources();
+    //  创建OutPut Resource  更新相机
     CreateWindowSizeDependentResources();
 }
 
@@ -283,7 +282,7 @@ void D3D12RaytracingProceduralGeometry::CreateAABBPrimitiveAttributesBuffers()
     m_aabbPrimitiveAttributeBuffer.Create(device, IntersectionShaderType::TotalPrimitiveCount, frameCount, L"AABB primitive attributes");
 }
 
-// Create resources that depend on the device.
+// 创建加速结构、根签名、PSO、描述符堆、模型、常量缓冲区、AABB、着色器表等等
 void D3D12RaytracingProceduralGeometry::CreateDeviceDependentResources()
 {
     CreateAuxilaryDeviceResources();
@@ -938,7 +937,7 @@ void D3D12RaytracingProceduralGeometry::BuildAccelerationStructures()
 }
 
 // Build shader tables.
-// This encapsulates all shader records - shaders and the arguments for their local root signatures.
+// This encapsulates all shader records - shaders and the arguments for their local root signatures.  
 void D3D12RaytracingProceduralGeometry::BuildShaderTables()
 {
     auto device = m_deviceResources->GetD3DDevice();
