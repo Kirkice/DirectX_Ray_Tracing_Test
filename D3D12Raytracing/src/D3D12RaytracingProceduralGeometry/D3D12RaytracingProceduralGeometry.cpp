@@ -1074,7 +1074,7 @@ void D3D12RaytracingProceduralGeometry::BuildShaderTables()
         m_hitGroupShaderTable = hitGroupShaderTable.GetResource();
     }
 }
-
+    
 void D3D12RaytracingProceduralGeometry::OnKeyDown(UINT8 key)
 {
     switch (key)
