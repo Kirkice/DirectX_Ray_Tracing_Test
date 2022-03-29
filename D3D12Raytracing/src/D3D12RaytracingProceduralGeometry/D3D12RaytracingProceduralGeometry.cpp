@@ -309,7 +309,7 @@ void D3D12RaytracingProceduralGeometry::CreateDeviceDependentResources()
 
     // Create constant buffers for the geometry and the scene.
     CreateConstantBuffers();
-
+       
     // Create AABB primitive attribute buffers.
     CreateAABBPrimitiveAttributesBuffers();
 
