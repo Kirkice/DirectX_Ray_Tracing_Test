@@ -304,7 +304,7 @@ void D3D12RaytracingProceduralGeometry::CreateDeviceDependentResources()
     // Build geometry to be used in the sample.
     BuildGeometry();
 
-    // Build raytracing acceleration structures from the generated geometry.
+    // Build raytracing acceleration structures from the generated geometry.  
     BuildAccelerationStructures();
 
     // Create constant buffers for the geometry and the scene.
