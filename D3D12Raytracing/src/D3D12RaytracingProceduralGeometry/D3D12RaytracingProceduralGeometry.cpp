@@ -580,55 +580,55 @@ void D3D12RaytracingProceduralGeometry::BuildProceduralGeometryAABBs()
 
     // Set up AABBs on a grid.
     {
-        XMINT3 aabbGrid = XMINT3(4, 1, 4);
-        const XMFLOAT3 basePosition =
-        {
-            -(aabbGrid.x * c_aabbWidth + (aabbGrid.x - 1) * c_aabbDistance) / 2.0f,
-            -(aabbGrid.y * c_aabbWidth + (aabbGrid.y - 1) * c_aabbDistance) / 2.0f,
-            -(aabbGrid.z * c_aabbWidth + (aabbGrid.z - 1) * c_aabbDistance) / 2.0f,
-        };
+		XMINT3 aabbGrid = XMINT3(4, 1, 4);
+		const XMFLOAT3 basePosition =
+		{
+			-(aabbGrid.x * c_aabbWidth + (aabbGrid.x - 1) * c_aabbDistance) / 2.0f,
+			-(aabbGrid.y * c_aabbWidth + (aabbGrid.y - 1) * c_aabbDistance) / 2.0f,
+			-(aabbGrid.z * c_aabbWidth + (aabbGrid.z - 1) * c_aabbDistance) / 2.0f,
+		};
 
-        XMFLOAT3 stride = XMFLOAT3(c_aabbWidth + c_aabbDistance, c_aabbWidth + c_aabbDistance, c_aabbWidth + c_aabbDistance);
-        auto InitializeAABB = [&](auto& offsetIndex, auto& size)
-        {
-            return D3D12_RAYTRACING_AABB { 
-                basePosition.x + offsetIndex.x * stride.x, 
-                basePosition.y + offsetIndex.y * stride.y,
-                basePosition.z + offsetIndex.z * stride.z,
-                basePosition.x + offsetIndex.x * stride.x + size.x,
-                basePosition.y + offsetIndex.y * stride.y + size.y,
-                basePosition.z + offsetIndex.z * stride.z + size.z,
-            };
-        };
+		XMFLOAT3 stride = XMFLOAT3(c_aabbWidth + c_aabbDistance, c_aabbWidth + c_aabbDistance, c_aabbWidth + c_aabbDistance);
+		auto InitializeAABB = [&](auto& offsetIndex, auto& size)
+		{
+			return D3D12_RAYTRACING_AABB{
+				basePosition.x + offsetIndex.x * stride.x,
+				basePosition.y + offsetIndex.y * stride.y,
+				basePosition.z + offsetIndex.z * stride.z,
+				basePosition.x + offsetIndex.x * stride.x + size.x,
+				basePosition.y + offsetIndex.y * stride.y + size.y,
+				basePosition.z + offsetIndex.z * stride.z + size.z,
+			};
+		};
         m_aabbs.resize(IntersectionShaderType::TotalPrimitiveCount);
         UINT offset = 0;
 
-        // Analytic primitives.
-        {
-            using namespace AnalyticPrimitive;
-            m_aabbs[offset + AABB] = InitializeAABB(XMINT3(3, 0, 0), XMFLOAT3(2, 3, 2));
-            m_aabbs[offset + Spheres] = InitializeAABB(XMFLOAT3(2.25f, 0, 0.75f), XMFLOAT3(3, 3, 3));
-            offset += AnalyticPrimitive::Count;
-        }
+         //Analytic primitives.
+		{
+			using namespace AnalyticPrimitive;
+			//m_aabbs[offset + AABB] = InitializeAABB(XMINT3(3, 0, 0), XMFLOAT3(2, 3, 2));
+			m_aabbs[offset + Spheres] = InitializeAABB(XMFLOAT3(2.25f, 0, 0.75f), XMFLOAT3(3, 3, 3));
+			offset += AnalyticPrimitive::Count;
+		}
 
-        // Volumetric primitives.
-        {
-            using namespace VolumetricPrimitive;
-            m_aabbs[offset + Metaballs] = InitializeAABB(XMINT3(0, 0, 0), XMFLOAT3(3, 3, 3));
-            offset += VolumetricPrimitive::Count;
-        }
+        //// Volumetric primitives.
+        //{
+        //    using namespace VolumetricPrimitive;
+        //    m_aabbs[offset + Metaballs] = InitializeAABB(XMINT3(0, 0, 0), XMFLOAT3(3, 3, 3));
+        //    offset += VolumetricPrimitive::Count;
+        //}
 
-        // Signed distance primitives.
-        {
-            using namespace SignedDistancePrimitive;
-            m_aabbs[offset + MiniSpheres] = InitializeAABB(XMINT3(2, 0, 0), XMFLOAT3(2, 2, 2));
-            m_aabbs[offset + TwistedTorus] = InitializeAABB(XMINT3(0, 0, 1), XMFLOAT3(2, 2, 2));
-            m_aabbs[offset + IntersectedRoundCube] = InitializeAABB(XMINT3(0, 0, 2), XMFLOAT3(2, 2, 2));
-            m_aabbs[offset + SquareTorus] = InitializeAABB(XMFLOAT3(0.75f, -0.1f, 2.25f), XMFLOAT3(3, 3, 3));
-            m_aabbs[offset + Cog] = InitializeAABB(XMINT3(1, 0, 0), XMFLOAT3(2, 2, 2));
-            m_aabbs[offset + Cylinder] = InitializeAABB(XMINT3(0, 0, 3), XMFLOAT3(2, 3, 2));
-            m_aabbs[offset + FractalPyramid] = InitializeAABB(XMINT3(2, 0, 2), XMFLOAT3(6, 6, 6));
-        }
+        // //Signed distance primitives.
+        //{
+        //    using namespace SignedDistancePrimitive;
+        //    m_aabbs[offset + MiniSpheres] = InitializeAABB(XMINT3(2, 0, 0), XMFLOAT3(2, 2, 2));
+        //    m_aabbs[offset + TwistedTorus] = InitializeAABB(XMINT3(0, 0, 1), XMFLOAT3(2, 2, 2));
+        //    m_aabbs[offset + IntersectedRoundCube] = InitializeAABB(XMINT3(0, 0, 2), XMFLOAT3(2, 2, 2));
+        //    m_aabbs[offset + SquareTorus] = InitializeAABB(XMFLOAT3(0.75f, -0.1f, 2.25f), XMFLOAT3(3, 3, 3));
+        //    m_aabbs[offset + Cog] = InitializeAABB(XMINT3(1, 0, 0), XMFLOAT3(2, 2, 2));
+        //    m_aabbs[offset + Cylinder] = InitializeAABB(XMINT3(0, 0, 3), XMFLOAT3(2, 3, 2));
+        //    m_aabbs[offset + FractalPyramid] = InitializeAABB(XMINT3(2, 0, 2), XMFLOAT3(6, 6, 6));
+        //}
         AllocateUploadBuffer(device, m_aabbs.data(), m_aabbs.size()*sizeof(m_aabbs[0]), &m_aabbBuffer.resource);
     }
 }
