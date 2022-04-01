@@ -594,7 +594,7 @@ void D3D12RaytracingProceduralGeometry::BuildProceduralGeometryAABBs()
 			return D3D12_RAYTRACING_AABB{
 				basePosition.x + offsetIndex.x * stride.x,
 				basePosition.y + offsetIndex.y * stride.y,
-				basePosition.z + offsetIndex.z * stride.z,
+				basePosition.z + offsetIndex.z * stride.z,  
 				basePosition.x + offsetIndex.x * stride.x + size.x,
 				basePosition.y + offsetIndex.y * stride.y + size.y,
 				basePosition.z + offsetIndex.z * stride.z + size.z,
